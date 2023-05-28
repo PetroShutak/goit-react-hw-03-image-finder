@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Loader from './Loader/Loader';
+import Searchbar from './Searchbar/Searchbar';
 
 axios.defaults.baseURL =
   'https://pixabay.com/api/?q=cat&page=1&key=your_key&image_type=photo&orientation=horizontal&per_page=12';
@@ -9,6 +10,7 @@ axios.defaults.baseURL =
 export const App = () => {
   return (
     <>
+      <Searchbar />
       <Loader />
       <div
         style={{
