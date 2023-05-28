@@ -1,6 +1,11 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-export const LoaderStyled = styled.div`
-    margin: 0 auto;
+const LoaderStyled = styled.div`
+  margin: 0 auto;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 `;
 
+export default LoaderStyled;
