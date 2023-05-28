@@ -1,16 +1,20 @@
+import Loader from "./Loader/Loader";
+
 export const App = () => {
   return (
-    <div
+<>
+<Loader />
+<div
       style={{
-        height: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        fontSize: 40,
+        fontSize: 24,
         color: '#010101'
       }}
     >
-      React homework template
+      Loading... Please wait...
     </div>
+</>
   );
 };
