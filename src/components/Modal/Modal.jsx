@@ -1,7 +1,8 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import { Component } from 'react';
 import { Overlay, ModalContent, ModalImage } from './Modal.styled';
 
-class Modal extends React.Component {
+class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -37,5 +38,11 @@ class Modal extends React.Component {
     );
   }
 }
+
+Modal.propTypes = {
+  largeImageURL: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
+
 
 export default Modal;

@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { fetchImages } from 'utils/fetchImages';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -81,5 +82,14 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.object),
+  currentPage: PropTypes.number,
+  query: PropTypes.string,
+  isLoading: PropTypes.bool,
+  selectedImage: PropTypes.object,
+};
+
 
 export default App;
