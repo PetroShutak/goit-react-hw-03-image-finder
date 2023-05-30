@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { fetchImages } from 'utils/fetchImages';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -15,6 +17,7 @@ class App extends Component {
     query: '',
     isLoading: false,
     selectedImage: null,
+    totalCount: 0,
   };
 
   galleryRef = null;
@@ -24,21 +27,32 @@ class App extends Component {
   }
 
   handleSearchSubmit = async query => {
-    this.setState({
-      images: [],
-      currentPage: 1,
-      query,
-      isLoading: true,
-    });
+    this.setState(
+      {
+        images: [],
+        currentPage: 1,
+        query,
+        isLoading: true,
+      },
+      async () => {
+        try {
+          const images = await fetchImages(query, 1);
 
-    try {
-      const images = await fetchImages(query, 1);
-      this.setState({ images });
-    } catch (error) {
-      this.setState({ error: error.message });
-    }
+          if (images.length === 0) {
+            this.notify('No images found.', this.state.totalCount);
+          } else {
+            const totalCount = this.state.images.length;
+            this.notify('Loaded first images.', totalCount + images.length);
+          }
+          this.setState({ images });
+        } catch (error) {
+          this.notify('Invalid request.', this.state.totalCount);
+          this.setState({ error: error.message });
+        }
 
-    this.setState({ isLoading: false });
+        this.setState({ isLoading: false });
+      }
+    );
   };
 
   handleLoadMore = async () => {
@@ -49,6 +63,10 @@ class App extends Component {
 
     try {
       const images = await fetchImages(query, nextPage);
+      if (images.length === 0) {
+        this.notify('No more images found.', this.state.images.length);
+        return;
+      }
       this.setState(prevState => ({
         images: [...prevState.images, ...images],
         currentPage: nextPage,
@@ -61,6 +79,13 @@ class App extends Component {
     if (this.galleryRef && this.galleryRef.current) {
       this.galleryRef.current.scrollToNewItems();
     }
+
+    const totalCount = this.state.images.length;
+    this.notify('Loaded next images.', totalCount);
+  };
+
+  notify = (message, totalCount) => {
+    toast(`${message} Found: ${totalCount} images.`);
   };
 
   handleOpenModal = selectedImage => {
@@ -73,8 +98,11 @@ class App extends Component {
 
   render() {
     const { images, isLoading, selectedImage } = this.state;
+    const hasImages = images.length > 0;
+
     return (
       <>
+        <ToastContainer />
         <Searchbar onSubmit={this.handleSearchSubmit} />
         <AppStyled>
           <ImageGallery
@@ -82,7 +110,7 @@ class App extends Component {
             onOpenModal={this.handleOpenModal}
             ref={this.galleryRef}
           />
-          {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+          {hasImages && <Button onClick={this.handleLoadMore} />}
           {isLoading && <Loader />}
           {selectedImage && (
             <Modal
