@@ -1,15 +1,15 @@
 
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-import {ImageGalleryStyled} from './ImageGallery.styled';
+import { ImageGalleryStyled } from './ImageGallery.styled';
 
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images, onOpenModal }) => {
   return (
     <>
-    <ImageGalleryStyled>
-      {images.map(image => (
-        <ImageGalleryItem key={image.id} image={image} />
-      ))}
-    </ImageGalleryStyled>
+      <ImageGalleryStyled>
+        {images.map(image => (
+          <ImageGalleryItem key={image.id} image={image} onOpenModal={onOpenModal} />
+        ))}
+      </ImageGalleryStyled>
     </>
   );
 };

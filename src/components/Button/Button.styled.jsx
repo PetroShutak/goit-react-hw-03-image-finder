@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const ButtonStyled = styled.button`
+display: flex;
+justify-content: center;
   padding: 8px 16px;
   border-radius: 2px;
   background-color: #3f51b5;

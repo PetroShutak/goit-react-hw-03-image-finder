@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { fetchImages } from 'utils/fetchImages';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
+import Modal from './Modal/Modal';
+import { AppStyled } from './App.styled'
 
 class App extends Component {
   state = {
@@ -11,18 +13,20 @@ class App extends Component {
     currentPage: 1,
     query: '',
     isLoading: false,
+    selectedImage: null,
   };
 
   handleSearchSubmit = async query => {
-    this.setState({ images: [], currentPage: 1, query, isLoading: true });
-
-    const API_KEY = '34734922-71a756c5ae22b2ca14df3cfaf';
-    const perPage = 12;
-    const url = `https://pixabay.com/api/?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
+    this.setState({
+      images: [],
+      currentPage: 1,
+      query,
+      isLoading: true,
+    });
 
     try {
-      const response = await axios.get(url);
-      this.setState({ images: response.data.hits });
+      const images = await fetchImages(query, 1);
+      this.setState({ images });
     } catch (error) {
       this.setState({ error: error.message });
     }
@@ -32,37 +36,48 @@ class App extends Component {
 
   handleLoadMore = async () => {
     const { currentPage, query } = this.state;
-    const API_KEY = '34734922-71a756c5ae22b2ca14df3cfaf';
-    const perPage = 12;
-    const url = `https://pixabay.com/api/?q=${query}&page=${
-      currentPage + 1
-    }&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`;
+    const nextPage = currentPage + 1;
+
+    this.setState({ isLoading: true });
 
     try {
-      this.setState({ isLoading: true });
-      const response = await axios.get(url);
+      const images = await fetchImages(query, nextPage);
       this.setState(prevState => ({
-        images: [...prevState.images, ...response.data.hits],
-        currentPage: prevState.currentPage + 1,
-        isLoading: false,
+        images: [...prevState.images, ...images],
+        currentPage: nextPage,
       }));
     } catch (error) {
       this.setState({ error: error.message });
     }
+
     this.setState({ isLoading: false });
-    
+  };
+
+  handleOpenModal = selectedImage => {
+    this.setState({ selectedImage });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ selectedImage: null });
   };
 
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, selectedImage } = this.state;
     return (
-      <div className="App">
+      <>
         <Searchbar onSubmit={this.handleSearchSubmit} />
-        <ImageGallery images={images} />
+      <AppStyled>
+        <ImageGallery images={images} onOpenModal={this.handleOpenModal} />
         {images.length > 0 && <Button onClick={this.handleLoadMore} />}
         {isLoading && <Loader />}
-
-      </div>
+        {selectedImage && (
+          <Modal
+          largeImageURL={selectedImage.largeImageURL}
+          onClose={this.handleCloseModal}
+          />
+          )}
+      </AppStyled>
+          </>
     );
   }
 }
