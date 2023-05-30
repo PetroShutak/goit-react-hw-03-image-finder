@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { fetchImages } from 'utils/fetchImages';
 import Searchbar from './Searchbar/Searchbar';
@@ -6,7 +6,7 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
-import { AppStyled } from './App.styled'
+import { AppStyled } from './App.styled';
 
 class App extends Component {
   state = {
@@ -16,6 +16,12 @@ class App extends Component {
     isLoading: false,
     selectedImage: null,
   };
+
+  galleryRef = null;
+
+  componentDidMount() {
+    this.galleryRef = React.createRef();
+  }
 
   handleSearchSubmit = async query => {
     this.setState({
@@ -52,6 +58,9 @@ class App extends Component {
     }
 
     this.setState({ isLoading: false });
+    if (this.galleryRef && this.galleryRef.current) {
+      this.galleryRef.current.scrollToNewItems();
+    }
   };
 
   handleOpenModal = selectedImage => {
@@ -67,18 +76,22 @@ class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.handleSearchSubmit} />
-      <AppStyled>
-        <ImageGallery images={images} onOpenModal={this.handleOpenModal} />
-        {images.length > 0 && <Button onClick={this.handleLoadMore} />}
-        {isLoading && <Loader />}
-        {selectedImage && (
-          <Modal
-          largeImageURL={selectedImage.largeImageURL}
-          onClose={this.handleCloseModal}
+        <AppStyled>
+          <ImageGallery
+            images={images}
+            onOpenModal={this.handleOpenModal}
+            ref={this.galleryRef}
           />
+          {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+          {isLoading && <Loader />}
+          {selectedImage && (
+            <Modal
+              largeImageURL={selectedImage.largeImageURL}
+              onClose={this.handleCloseModal}
+            />
           )}
-      </AppStyled>
-          </>
+        </AppStyled>
+      </>
     );
   }
 }
@@ -90,6 +103,5 @@ App.propTypes = {
   isLoading: PropTypes.bool,
   selectedImage: PropTypes.object,
 };
-
 
 export default App;
