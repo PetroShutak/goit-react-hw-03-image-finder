@@ -85,7 +85,7 @@ class App extends Component {
   };
 
   notify = (message, totalCount) => {
-    toast(`${message} Found: ${totalCount} images.`);
+    toast(`${message} Found: ${totalCount} pcs.`);
   };
 
   handleOpenModal = selectedImage => {
