@@ -88,12 +88,22 @@ class App extends Component {
     toast(`${message} Found: ${totalCount} pcs.`);
   };
 
+openModal = () => {
+  document.body.style.overflow = 'hidden';
+};
+
+closeModal = () => {
+  document.body.style.overflow = 'auto';
+};
+
   handleOpenModal = selectedImage => {
     this.setState({ selectedImage });
+    openModal();
   };
 
   handleCloseModal = () => {
     this.setState({ selectedImage: null });
+    closeModal();
   };
 
   render() {
