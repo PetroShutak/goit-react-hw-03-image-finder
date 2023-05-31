@@ -99,7 +99,7 @@ class App extends Component {
 
   render() {
     const { images, isLoading, selectedImage } = this.state;
-    const hasImages = images.length > 0;
+    const isShowButton = images.length > 0 && !isLoading;
 
     return (
       <>
@@ -111,7 +111,7 @@ class App extends Component {
             onOpenModal={this.handleOpenModal}
             ref={this.galleryRef}
           />
-          {hasImages && <Button onClick={this.handleLoadMore} />}
+          {isShowButton && <Button onClick={this.handleLoadMore} />}
           {isLoading && <Loader />}
           {selectedImage && (
             <Modal
