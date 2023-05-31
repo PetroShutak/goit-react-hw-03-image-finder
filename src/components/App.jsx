@@ -38,11 +38,13 @@ class App extends Component {
         try {
           const images = await fetchImages(query, 1);
 
-          if (images.length === 0) {
+          if (images.length === 0 && images.length <= 12) {
+            this.setState({ isLoading: false });
             this.notify('No images found.', this.state.totalCount);
           } else {
             const totalCount = this.state.images.length;
             this.notify('Loaded first images.', totalCount + images.length);
+            
           }
           this.setState({ images });
         } catch (error) {
@@ -63,8 +65,10 @@ class App extends Component {
 
     try {
       const images = await fetchImages(query, nextPage);
-      if (images.length === 0) {
+      if (images.length === 0 && images.length <= 12) {
         this.notify('No more images found.', this.state.images.length);
+        this.setState({ isLoading: false });
+
         return;
       }
       this.setState(prevState => ({
