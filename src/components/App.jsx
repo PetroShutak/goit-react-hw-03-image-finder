@@ -103,7 +103,7 @@ class App extends Component {
 
   render() {
     const { images, isLoading, selectedImage } = this.state;
-    const isShowButton = images.length > 0 && !isLoading;
+    const isShowButton = images.length > 0 && !isLoading && images.length >= 12;
 
     return (
       <>
