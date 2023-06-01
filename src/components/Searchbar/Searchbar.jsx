@@ -1,6 +1,8 @@
 import { Component } from 'react';
 import { SearchbarStyled } from './Searchbar.styled';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class Searchbar extends Component {
   state = {
@@ -13,6 +15,10 @@ export default class Searchbar extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    if (this.state.query.trim() === '') {
+      toast.error('Please input tag for searching images');
+      return;
+    }
     this.props.onSubmit(this.state.query);
     this.setState({ query: '' });
   };

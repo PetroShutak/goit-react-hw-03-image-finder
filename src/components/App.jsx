@@ -58,7 +58,7 @@ class App extends Component {
   };
 
   handleLoadMore = async () => {
-    const { currentPage, query } = this.state;
+    const { currentPage, query, images } = this.state;
     const nextPage = currentPage + 1;
 
     this.setState({ isLoading: true });
@@ -85,7 +85,7 @@ class App extends Component {
     }
 
     const totalCount = this.state.images.length;
-    this.notify('Loaded next images.', totalCount);
+    this.notify('Loaded next images.', totalCount + images.length);
   };
 
   notify = (message, totalCount) => {
